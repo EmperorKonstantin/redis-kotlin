@@ -13,7 +13,16 @@ fun main(args: Array<String>) {
     serverSocket.reuseAddress = true
 
     val response = serverSocket.accept() // Wait for connection from client.
-    response.getOutputStream().write("+PONG\r\n".toByteArray())
+    val input = response.getInputStream().bufferedReader()
+    val output = response.getOutputStream().bufferedWriter()
+
+    while (true) {
+        val line = input.readLine() ?: break
+        if (line.contains("PING", ignoreCase = true)) {
+            output.write("+PONG\r\n")
+            output.flush()
+        }
+    }
 
     println("accepted new connection")
 }

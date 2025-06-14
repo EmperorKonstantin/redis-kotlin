@@ -12,6 +12,8 @@ fun main(args: Array<String>) {
     // ensures that we don't run into 'Address already in use' errors
     serverSocket.reuseAddress = true
 
-    serverSocket.accept() // Wait for connection from client.
+    val response = serverSocket.accept() // Wait for connection from client.
+    response.getOutputStream().write("+PONG\r\n".toByteArray())
+
     println("accepted new connection")
 }

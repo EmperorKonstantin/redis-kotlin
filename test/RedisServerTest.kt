@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class RedisServerMockTest {
+class RedisServerTest {
 
     @AfterEach
     fun tearDown() {

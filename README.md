@@ -34,6 +34,13 @@ event loops, the Redis protocol and more.
 ## Running the Code
 
 1. Ensure you have `kotlin (>=2.0)` installed locally
-1. Run `./your_program.sh` to run your Redis server, which is implemented in
+1. Run `./amper run` to run your Redis server, which is implemented in
    `src/main/kotlin/Main.kt`.
+1. Output will be streamed to your terminal.
+
+## Test the Code
+
+1. Ensure you have `kotlin (>=2.0)` installed locally
+1. Run `./amper test` to run your tests, which are implemented in
+   `test/MainTest.kt`.
 1. Output will be streamed to your terminal.

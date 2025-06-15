@@ -10,25 +10,30 @@ event loops, the Redis protocol and more.
 **Note**: If you're viewing this repo on GitHub, head over to
 [codecrafters.io](https://codecrafters.io) to try the challenge.
 
-# Passing the first stage
+## Key Architectural Decisions:
 
-The entry point for your Redis implementation is in `src/main/kotlin/Main.kt`.
-Study and uncomment the relevant code, and push your changes to pass the first
-stage:
+1. **Coroutines over traditional threading** 
+  - Enables handling thousands of concurrent connections efficiently
+  - Leverages Kotlin's coroutines for asynchronous I/O operations
+  - Enables non-blocking handling of client connections
+  - Provides a lightweight concurrency model compared to threads
+2. **ConcurrentHashMap for storage**
+  - Provides thread-safe operations without explicit locking
+3. **Volatile flag for lifecycle management**
+  - Ensures proper visibility across threads during shutdown
+4. **Structured concurrency**
+  - Parent-child relationships between coroutines for proper cleanup
 
-```sh
-git commit -am "pass 1st stage" # any msg
-git push origin master
-```
+## Notable Implementation Details:
 
-That's all!
+- The server follows Redis protocol conventions for response formats (+, -, :, *, $ prefixes)
+- Pattern matching in KEYS command uses simple prefix/suffix matching rather than full glob patterns
+- Error handling is comprehensive, preventing crashes while providing meaningful feedback
+- The shutdown hook ensures graceful termination with statistics display
 
-# Stage 2 & beyond
-
-Note: This section is for stages 2 and beyond.
+## Running the Code
 
 1. Ensure you have `kotlin (>=2.0)` installed locally
 1. Run `./your_program.sh` to run your Redis server, which is implemented in
    `src/main/kotlin/Main.kt`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+1. Output will be streamed to your terminal.

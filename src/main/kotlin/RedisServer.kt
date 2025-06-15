@@ -1,3 +1,4 @@
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
@@ -110,12 +111,13 @@ class RedisServer(private val port: Int) {
         return parts.joinToString(" ")
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun processCommand(input: String): String {
         // Split the input into command and arguments
         // limit = 3: Splits into maximum 3 parts
         // Example: "SET key value with spaces" → ["SET", "key", "value with spaces"]
         // Preserves spaces in values
-        val parts = input.split(" ", limit = 3)
+        val parts = input.trim().split("\\s+".toRegex())
         val command = parts[0].uppercase()
 
         return when (command) {
@@ -125,11 +127,42 @@ class RedisServer(private val port: Int) {
 
             "SET" -> {
                 if (parts.size < 3) {
-                    "-ERR wrong number of arguments for 'set' command\r\n"
+                    "-ERROR: Wrong number of arguments for 'SET' command\r\n"
                 } else {
                     val key = parts[1]
                     val value = parts[2]
+                    println("DEBUG: parts = ${parts.joinToString(", ")}")
+                    println("DEBUG: parts.size = ${parts.size}")
+                    if (parts.size >= 3) {
+                        println("DEBUG: key = '${parts[1]}'")
+                        println("DEBUG: value = '${parts[2]}'")
+                    }
+                    // Store ONLY the value, not the expiry parameters
                     storage[key] = value
+
+                    // Handle optional expiry separately
+                    if (parts.size >= 5) {
+                        when (parts[3].uppercase()) {
+                            "EX" -> {
+                                val seconds = parts[4].toLongOrNull()
+                                if (seconds != null && seconds > 0) {
+                                    kotlinx.coroutines.GlobalScope.launch {
+                                        kotlinx.coroutines.delay(seconds * 1000)
+                                        storage.remove(key)
+                                    }
+                                }
+                            }
+                            "PX" -> {
+                                val ms = parts[4].toLongOrNull()
+                                if (ms != null && ms > 0) {
+                                    kotlinx.coroutines.GlobalScope.launch {
+                                        kotlinx.coroutines.delay(ms)
+                                        storage.remove(key)
+                                    }
+                                }
+                            }
+                        }
+                    }
                     "+OK\r\n"
                 }
             }

@@ -1,0 +1,4 @@
+JetBrains Amper version 0.7.0 (b9c2a96, 2025-05-20)
+running on Mac OS X 15.5 jvm arch aarch64
+
+00:02.165 INFO  :codecrafters-redis-kotlin:compileJvm JvmCompileTask            Compiling module 'codecrafters-redis-kotlin' for platform 'jvm'...

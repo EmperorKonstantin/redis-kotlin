@@ -1,0 +1,29 @@
+{
+    "codeVersion": "0.7.0",
+    "configuration": {
+        "inputDirsDestPaths": "[.]",
+        "jarConfig": "{\"mainClassFqn\":\"MainKt\"}",
+        "outputJarPath": "/Users/ant/dev/codecrafters-redis-kotlin/build/tasks/_codecrafters-redis-kotlin_jarJvm/codecrafters-redis-kotlin-jvm.jar"
+    },
+    "inputs": [
+        "/Users/ant/dev/codecrafters-redis-kotlin/build/tasks/_codecrafters-redis-kotlin_compileJvm"
+    ],
+    "inputsState": {
+        "/Users/ant/dev/codecrafters-redis-kotlin/build/tasks/_codecrafters-redis-kotlin_compileJvm/META-INF/main.kotlin_module": "size 36 mtime 2025-06-15T20:05:54.19510728Z",
+        "/Users/ant/dev/codecrafters-redis-kotlin/build/tasks/_codecrafters-redis-kotlin_compileJvm/MainKt$main$1.class": "size 4354 mtime 2025-06-15T20:05:54.189063408Z",
+        "/Users/ant/dev/codecrafters-redis-kotlin/build/tasks/_codecrafters-redis-kotlin_compileJvm/MainKt.class": "size 813 mtime 2025-06-15T20:05:54.188823912Z",
+        "/Users/ant/dev/codecrafters-redis-kotlin/build/tasks/_codecrafters-redis-kotlin_compileJvm/RedisServer$handleClient$2.class": "size 5289 mtime 2025-06-15T20:05:54.189634692Z",
+        "/Users/ant/dev/codecrafters-redis-kotlin/build/tasks/_codecrafters-redis-kotlin_compileJvm/RedisServer$processCommand$1.class": "size 3436 mtime 2025-06-15T20:05:54.189711607Z",
+        "/Users/ant/dev/codecrafters-redis-kotlin/build/tasks/_codecrafters-redis-kotlin_compileJvm/RedisServer$processCommand$2.class": "size 3426 mtime 2025-06-15T20:05:54.18978069Z",
+        "/Users/ant/dev/codecrafters-redis-kotlin/build/tasks/_codecrafters-redis-kotlin_compileJvm/RedisServer$start$2$1.class": "size 3146 mtime 2025-06-15T20:05:54.189544026Z",
+        "/Users/ant/dev/codecrafters-redis-kotlin/build/tasks/_codecrafters-redis-kotlin_compileJvm/RedisServer$start$2.class": "size 4636 mtime 2025-06-15T20:05:54.189420861Z",
+        "/Users/ant/dev/codecrafters-redis-kotlin/build/tasks/_codecrafters-redis-kotlin_compileJvm/RedisServer.class": "size 12686 mtime 2025-06-15T20:05:54.189298488Z"
+    },
+    "outputs": [
+        "/Users/ant/dev/codecrafters-redis-kotlin/build/tasks/_codecrafters-redis-kotlin_jarJvm/codecrafters-redis-kotlin-jvm.jar"
+    ],
+    "outputsState": {
+        "/Users/ant/dev/codecrafters-redis-kotlin/build/tasks/_codecrafters-redis-kotlin_jarJvm/codecrafters-redis-kotlin-jvm.jar": "size 18838 mtime 2025-06-15T20:05:54.218321737Z mode 420 owner ant group staff"
+    },
+    "outputProperties": {}
+}

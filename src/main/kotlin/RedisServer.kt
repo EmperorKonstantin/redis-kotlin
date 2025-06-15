@@ -127,32 +127,32 @@ class RedisServer(private val port: Int) {
 
             "SET" -> {
                 if (parts.size < 3) {
-                    "-ERR wrong number of arguments for 'set' command"
+                    "-ERR wrong number of arguments for 'set' command\r\n"
                 } else {
                     val key = parts[1]
                     val value = parts[2]
                     storage[key] = value
-                    "+OK"
+                    "+OK\r\n"
                 }
             }
 
             "GET" -> {
                 if (parts.size < 2) {
-                    "-ERR wrong number of arguments for 'get' command"
+                    "-ERR wrong number of arguments for 'get' command\r\n"
                 } else {
                     val key = parts[1]
                     val value = storage[key]
-                    if (value != null) "+$value" else "$-1"
+                    if (value != null) "+$value\r\n" else "$-1\r\n"
                 }
             }
 
             "DEL" -> {
                 if (parts.size < 2) {
-                    "-ERR wrong number of arguments for 'del' command"
+                    "-ERR wrong number of arguments for 'del' command\r\n"
                 } else {
                     val key = parts[1]
                     val existed = storage.remove(key) != null
-                    ":${if (existed) 1 else 0}"
+                    ":${if (existed) 1 else 0}\r\n"
                 }
             }
 
@@ -166,15 +166,15 @@ class RedisServer(private val port: Int) {
 
             "EXISTS" -> {
                 if (parts.size < 2) {
-                    "-ERR wrong number of arguments for 'exists' command"
+                    "-ERR wrong number of arguments for 'exists' command\r\n"
                 } else {
                     val key = parts[1]
-                    ":${if (storage.containsKey(key)) 1 else 0}"
+                    ":${if (storage.containsKey(key)) 1 else 0}\r\n"
                 }
             }
 
             "KEYS" -> {
-                val pattern = if (parts.size > 1) parts[1] else "*"
+                val pattern = if (parts.size > 1) parts[1] else "*\r\n"
                 val keys = if (pattern == "*") {
                     storage.keys.toList()
                 } else {
@@ -189,7 +189,7 @@ class RedisServer(private val port: Int) {
                 }
 
                 if (keys.isEmpty()) {
-                    "*0"
+                    "*0\r\n"
                 } else {
                     "*${keys.size}\r\n" + keys.joinToString("\r\n") { "+$it" }
                 }
@@ -197,15 +197,15 @@ class RedisServer(private val port: Int) {
 
             "FLUSHALL" -> {
                 storage.clear()
-                "+OK"
+                "+OK\r\n"
             }
 
             "QUIT" -> {
-                "+OK"
+                "+OK\r\n"
             }
 
             else -> {
-                "-ERR unknown command '$command'"
+                "-ERR unknown command '$command'\r\n"
             }
         }
     }

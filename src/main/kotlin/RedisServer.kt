@@ -45,17 +45,14 @@ class RedisServer(private val port: Int) {
         println("Client connected: $clientAddress")
 
         try {
-            val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
+            val input = socket.getInputStream()
             val writer = PrintWriter(socket.getOutputStream(), true)
 
-            // Read commands from the client until the connection is closed
-            var line: String?
-            while (reader.readLine().also { line = it } != null) {
-                val input = line?.trim() ?: continue
-                if (input.isEmpty()) continue
-
-                val response = processCommand(input)
-                writer.println(response)
+            while (true) {
+                val command = parseRESPCommand(input) ?: break
+                val response = processCommand(command)
+                writer.print(response)
+                writer.flush()
             }
         } catch (e: Exception) {
             println("Error handling client $clientAddress: ${e.message}")
@@ -69,6 +66,52 @@ class RedisServer(private val port: Int) {
         }
     }
 
+    // Parses a RESP command from the input stream and returns it as a single string (space-separated)
+    private fun parseRESPCommand(input: java.io.InputStream): String? {
+        fun readLine(): String? {
+            val sb = StringBuilder()
+            while (true) {
+                val b = input.read()
+                if (b == -1) return null
+                if (b == '\r'.code) {
+                    if (input.read() == '\n'.code) break
+                } else {
+                    sb.append(b.toChar())
+                }
+            }
+            return sb.toString()
+        }
+
+        val firstByte = input.read()
+        if (firstByte == -1) return null
+        if (firstByte.toChar() != '*') return null // Only handle RESP arrays
+
+        val numElements = readLine()?.toIntOrNull() ?: return null
+        val parts = mutableListOf<String>()
+        repeat(numElements) {
+            val type = input.read()
+            if (type == -1) return null
+            if (type.toChar() != '$') return null // Only handle bulk strings
+            val len = readLine()?.toIntOrNull() ?: return null
+            if (len < 0) {
+                parts.add("")
+                return@repeat
+            }
+            val buf = ByteArray(len)
+            var read = 0
+            while (read < len) {
+                val r = input.read(buf, read, len - read)
+                if (r == -1) return null
+                read += r
+            }
+            // Consume \r\n
+            input.read()
+            input.read()
+            parts.add(String(buf))
+        }
+        return parts.joinToString(" ")
+    }
+
     private fun processCommand(input: String): String {
         // Split the input into command and arguments
         // limit = 3: Splits into maximum 3 parts
@@ -79,7 +122,7 @@ class RedisServer(private val port: Int) {
 
         return when (command) {
             "PING" -> {
-                if (parts.size > 1) parts[1] else "PONG"
+                if (parts.size > 1) "+${parts[1]}\r\n" else "+PONG\r\n"
             }
 
             "SET" -> {
@@ -115,9 +158,9 @@ class RedisServer(private val port: Int) {
 
             "ECHO" -> {
                 if (parts.size < 2) {
-                    "-ERR wrong number of arguments for 'echo' command"
+                    "-ERR wrong number of arguments for 'echo' command\r\n"
                 } else {
-                    "+${parts[1]}"
+                    "+${parts[1]}\r\n"
                 }
             }
 

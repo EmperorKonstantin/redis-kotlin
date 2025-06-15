@@ -25,6 +25,8 @@ class RedisServer(private val port: Int) {
             while (running) {
                 try {
                     val clientSocket = serverSocket.accept()
+
+                    // Creates new coroutine without blocking current thread
                     launch { handleClient(clientSocket) }
                 } catch (e: Exception) {
                     if (running) {
@@ -37,6 +39,7 @@ class RedisServer(private val port: Int) {
         }
     }
 
+    // Design pattern: Each client connection runs in its own coroutine
     private suspend fun handleClient(socket: Socket) = withContext(Dispatchers.IO) {
         val clientAddress = socket.remoteSocketAddress
         println("Client connected: $clientAddress")
@@ -45,6 +48,7 @@ class RedisServer(private val port: Int) {
             val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
             val writer = PrintWriter(socket.getOutputStream(), true)
 
+            // Read commands from the client until the connection is closed
             var line: String?
             while (reader.readLine().also { line = it } != null) {
                 val input = line?.trim() ?: continue
@@ -66,6 +70,10 @@ class RedisServer(private val port: Int) {
     }
 
     private fun processCommand(input: String): String {
+        // Split the input into command and arguments
+        // limit = 3: Splits into maximum 3 parts
+        // Example: "SET key value with spaces" → ["SET", "key", "value with spaces"]
+        // Preserves spaces in values
         val parts = input.split(" ", limit = 3)
         val command = parts[0].uppercase()
 

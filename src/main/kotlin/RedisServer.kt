@@ -113,6 +113,14 @@ class RedisServer(private val port: Int) {
                 }
             }
 
+            "ECHO" -> {
+                if (parts.size < 2) {
+                    "-ERR wrong number of arguments for 'echo' command"
+                } else {
+                    "+${parts[1]}"
+                }
+            }
+
             "EXISTS" -> {
                 if (parts.size < 2) {
                     "-ERR wrong number of arguments for 'exists' command"
